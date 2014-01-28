@@ -147,11 +147,16 @@ DygraphCanvasRenderer.prototype._createIEClipArea = function() {
   var backgroundColor = document.bgColor;
   var element = this.dygraph_.graphDiv;
   while (element != document) {
-    var bgcolor = element.currentStyle.backgroundColor;
-    if (bgcolor && bgcolor != 'transparent') {
-      backgroundColor = bgcolor;
-      break;
-    }
+    // IE8 - element doesn't become equal to document, check for null.
+    if(element == null) { break; }
+    //IE8 - Check currentStyle exists. Will not exist if element is off screen.
+    if(typeof element.currentStyle !== 'undefined') {
+      var bgcolor = element.currentStyle.backgroundColor;
+      if (bgcolor && bgcolor != 'transparent') {
+        backgroundColor = bgcolor;
+        break;
+      }  
+    }    
     element = element.parentNode;
   }
 
@@ -165,7 +170,11 @@ DygraphCanvasRenderer.prototype._createIEClipArea = function() {
     elem.style.position = 'absolute';
     elem.style.left = area.x + 'px';
     elem.style.top = area.y + 'px';
-    elem.style.width = area.w + 'px';
+    // IE8 - Check for negative width
+    if(parseFloat(area.w) > 0) {
+      elem.style.width =  area.w + 'px';      
+    }
+
     elem.style.height = area.h + 'px';
     graphDiv.appendChild(elem);
   }

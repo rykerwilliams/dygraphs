@@ -169,7 +169,10 @@ rangeSelector.prototype.resize_ = function() {
   function setElementRect(canvas, rect) {
     canvas.style.top = rect.y + 'px';
     canvas.style.left = rect.x + 'px';
-    canvas.width = rect.w;
+    // IE8 - Check for negative width.
+    if(parseFloat(rect.w) > 0) {
+      canvas.width = rect.w;      
+    }
     canvas.height = rect.h;
     canvas.style.width = canvas.width + 'px';    // for IE
     canvas.style.height = canvas.height + 'px';  // for IE
